@@ -1,0 +1,34 @@
+## I used chatgpt for this I asked it to create me a facet_wrap plot
+## and I gave it the code you included
+## and then i asked it to modify it to only include January
+## Other than communicate to the AI and provide the path
+## I did not contribute much so I totally understand if I 
+## do not get credit for this
+
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(lubridate)
+
+load('/Users/joshuakimbrell/Documents/UM/Summer 24/p2/data/r/Rscripts/DATA/house_prices.rda')
+
+house_prices%>%gather(key=measure, value=value, -c(house_price_index, date, state))->house_reshaped
+
+# Filter the dataset to include only January of each year
+house_prices_january <- house_prices %>%
+  filter(month(date) == 1)
+
+# Reshape the data
+house_prices_january %>%
+  gather(key = measure, value = value, -c(house_price_index, date, state)) -> house_reshaped_january
+
+# Create the facet_wrap plot
+ggplot(house_reshaped_january, aes(x = date, y = value, color = measure)) +
+  geom_line() +
+  facet_wrap(~state) +
+  scale_x_continuous(breaks = ymd(c("1980-01-01", "2000-01-01", "2020-01-01")), 
+                     labels = c("80", "00", "20")) +
+  labs(title = "House Prices and Unemployment Rates by State (January Only)",
+       x = "Year",
+       y = "Value") +
+  theme_minimal()
